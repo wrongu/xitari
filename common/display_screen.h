@@ -46,6 +46,10 @@
 #include "SDL/SDL_image.h"
 #include "SDL/SDL_rotozoom.h"
 #include "SDL/SDL_gfxPrimitives.h"
+#include <string>
+
+using std::string;
+
 
 namespace ale {
 

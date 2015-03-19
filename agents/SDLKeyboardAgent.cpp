@@ -33,13 +33,17 @@
 #include "SDLKeyboardAgent.hpp"
 #include "common/random_tools.h"
 #include <stdexcept>
+#include <string>
 
 #ifdef __USE_SDL
 
 using namespace ale;
+using std::string;
+using std::cout;
+using std::endl;
 
 SDLKeyboardAgent::SDLKeyboardAgent(OSystem* _osystem, RomSettings* _settings) : 
-    PlayerAgent(_osystem, _settings), manual_control(false) {
+    PlayerAgent(_osystem, _settings), manual_control(false), playback_speed(50) {
   Settings& settings = p_osystem->settings();
 
   // If not displaying the screen, there is little point in having keyboard control
@@ -94,13 +98,27 @@ void SDLKeyboardAgent::usage() {
     printf("  -p: Toggle manual control of the agent\n");
 }
 
+inline int max(int a, int b){
+    return (a) > (b) ? a : b;
+}
+
+inline int min(int a, int b){
+    return (a) < (b) ? a : b;
+}
+
 Action SDLKeyboardAgent::waitForKeypress() {
     Action a = UNDEFINED;
     // This loop is necessary because keypress events come in quickly
     while (a == UNDEFINED) {
-        SDL_Delay(50); // Set amount of sleep time
+        SDL_Delay(playback_speed); // Set amount of sleep time
         SDL_PumpEvents();
         Uint8* keymap = SDL_GetKeyState(NULL);
+
+        // control playback speed
+        if(keymap[SDLK_f]) // faster
+            playback_speed = max(playback_speed - 5, 10);
+        else if(keymap[SDLK_s]) // slower
+            playback_speed = min(playback_speed + 5, 100);
 
         // Break out of this loop if the 'p' key is pressed
         if (keymap[SDLK_p]) {

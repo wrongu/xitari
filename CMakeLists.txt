@@ -68,6 +68,10 @@ ADD_EXECUTABLE(
     ${zlib_files}
 )
 
+ADD_DEFINITIONS(
+    -D__USE_SDL
+)
+
 ADD_LIBRARY(
     xitari
     ale_interface.hpp 
@@ -122,7 +126,15 @@ IF(APPLE)
             DESTINATION "${LIBDIR}")
 ENDIF()
 
-TARGET_LINK_LIBRARIES(ale)
+FIND_PACKAGE(SDL)
+FIND_PACKAGE(SDL_image)
+
+TARGET_LINK_LIBRARIES(
+  ale
+  ${SDL_LIBRARY}
+  ${SDL_IMAGE_LIBRARIES}
+  -lSDL_gfx
+)
 
 FIND_PACKAGE(Threads)
 
